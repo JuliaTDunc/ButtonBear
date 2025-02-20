@@ -1,26 +1,31 @@
-import { useRive } from "@rive-app/react";
+import { useRive, useStateMachineInput } from "rive-react";
 
 const Bear = () => {
-
-    const handleMove = () => {
-        if (rive) {
-            rive.play("Walk"); // Trigger walk animation
-        }
-    };
-
-    const handleStop = () => {
-        if (rive) {
-            rive.play("Idle"); // Back to idle when stopping
-        }
-    };
+    const STATE_MACHINE_NAME = "BearStateMachine";
+    const INPUT_NAME = "Point";
 
     const { rive, RiveComponent } = useRive({
-        src: "/assets/bear.riv", // Make sure your .riv file is in /src/assets or public/assets
-        stateMachines: "BearState", // Match the state machine name in Rive
-        autoplay: true,
+        src: "/assets/bear.riv",
+        stateMachines: STATE_MACHINE_NAME,
+        autoplay: true, 
     });
 
-    return <RiveComponent style={{ width: "200px", height: "200px" }} />;
+    const pointInput = useStateMachineInput(rive, STATE_MACHINE_NAME, INPUT_NAME);
+
+    const handleButtonClick = () => {
+        if (pointInput) {
+            pointInput.fire();
+        }
+    };
+
+    return (
+        <div>
+            <RiveComponent style={{ width: "300px", height: "300px" }} />
+            <div id="button-container">
+                <button onClick={handleButtonClick}>Click Me!</button>
+            </div>
+        </div>
+    );
 };
 
 export default Bear;
